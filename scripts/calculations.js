@@ -1,7 +1,3 @@
-let budgetValue = 0;
-let totalExpensesValue = 0;
-const balanceColor = ["green" , "orange" , "red"];
-
 const expenseEntries = [
     ["groceries" , 33],
     ["restaurants" , 50],
@@ -12,9 +8,9 @@ const expenseEntries = [
     ["subscriptions", 12],
 ]
 
-for (let i = 0; i < expenseEntries.length; i++) {
-    totalExpensesValue += expenseEntries[i][1];
-}
+let totalExpensesValue = expenseEntries.reduce((total, entry) => {
+    return total + entry[1];
+}, 0);
 
 function calculateAverageExpense() {
     if (totalExpensesValue === 0) {
@@ -24,17 +20,22 @@ function calculateAverageExpense() {
     } 
 }
 
+let budgetValue = 0;
+
 function calculateBalance() {
     return budgetValue - totalExpensesValue;
 }
 
+let balanceColor = "green";
+
 function updateBalanceColor() {
-    if (calculateBalance() < 0) {
-        return balanceColor[2];
-    } else if (calculateBalance() < budgetValue / 4) {
-        return balanceColor[1];
+    const balance = calculateBalance();
+    if (balance < 0) {
+        balanceColor = "red";
+    } else if (balance < budgetValue / 4) {
+        balanceColor = "orange";
     } else {
-        return balanceColor[0];
+        balanceColor = "green";
     }
 }
 
@@ -73,8 +74,13 @@ function calculateLargestCategory() {
 }
 
 function addExpenseEntry(expenseEntry) {
+    const category = expenseEntry[0];
+    const value = expenseEntry[1];
+
+    if (typeof value !== "number" || value <= 0) {
+        return;
+    }
 
     expenseEntries.push(expenseEntry);
-
-    totalExpensesValue = totalExpensesValue + expenseEntry[1];
+    totalExpensesValue += value;
 }
